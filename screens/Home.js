@@ -97,6 +97,7 @@ export default function HomeScreen() {
         keyExtractor={(item) => item.id}
         numColumns={numColumns}
       />
+      <Button title="Logout" onPress={handleLogout} />  
     </View>
   );
 }

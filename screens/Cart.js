@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Button, TextInput } from 'react-native';
 import { AuthContext } from '../contexts/auth'
 import { CartContext } from '../contexts/CartContext';
-import firebase from 'firebase';
+import firebase from '../firebase.js';
 import PriorityQueue from '../components/PriorityQueue.js';
 
 export default function Cart() {

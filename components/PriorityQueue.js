@@ -1,4 +1,4 @@
-class PriorityQueue {
+export default class PriorityQueue {
     constructor() {
       this.heap = [null];
     }
@@ -26,10 +26,7 @@ class PriorityQueue {
         let current = 1;
         let leftChildIndex = current * 2;
         let rightChildIndex = current * 2 + 1;
-        while (
-          this.heap[leftChildIndex] &&
-          this.heap[rightChildIndex] &&
-          (this.heap[current].total < this.heap[leftChildIndex].total ||
+        while (this.heap[leftChildIndex] && this.heap[rightChildIndex] && (this.heap[current].total < this.heap[leftChildIndex].total ||
             this.heap[current].total < this.heap[rightChildIndex].total)
         ) {
           if (this.heap[leftChildIndex].total > this.heap[rightChildIndex].total) {

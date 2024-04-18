@@ -10,14 +10,21 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState('');
   const { setUser } = useContext(AuthContext);
   const navigation = useNavigation();
+  const [message, setMessage] = useState(''); // Add this line
 
   const handleRegister = async () => {
     const auth = getAuth(firebase);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       setUser(userCredential.user);
+      setMessage(''); // Clear any previous error messages
     } catch (error) {
       console.error(error);
+      if (error.code === 'auth/email-already-in-use') {
+        setMessage('The email address is already in use by another account.');
+      } else {
+        setMessage('An error occurred during registration.');
+      }
     }
   };
 
@@ -31,6 +38,7 @@ export default function RegisterScreen() {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.buttonText}>Login</Text>
       </TouchableOpacity>
+      <Text>{message}</Text> {/* Add this line */}
     </View>
   );
 }

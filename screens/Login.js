@@ -9,6 +9,7 @@ import AdminPanel  from '../screens/AdminPanel.js';
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [message, setMessage] = useState('');
   const { setUser } = useContext(AuthContext);
   const navigation = useNavigation();
 
@@ -24,8 +25,10 @@ export default function LoginScreen() {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log('signed in with Firebase Authentication', userCredential.user);
         setUser(userCredential.user);
+        setMessage('Logged in successfully');
       } catch (error) {
         console.error('error signing in with Firebase Authentication', error);
+        setMessage('Invalid credentials');
       }
     }
   };
@@ -40,6 +43,7 @@ export default function LoginScreen() {
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
+      <Text>{message}</Text> {/* Add this line */}
     </View>
   );
 }
