@@ -35,15 +35,17 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <TextInput style={styles.input} placeholder="Email" onChangeText={setEmail} />
-      <TextInput style={styles.input} placeholder="Password" onChangeText={setPassword} secureTextEntry />
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
-        <Text style={styles.buttonText}>Register</Text>
-      </TouchableOpacity>
-      <Text>{message}</Text> {/* Add this line */}
+      <View style={styles.loginBlob}>
+        <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#000" onChangeText={setEmail} />
+        <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#000" onChangeText={setPassword} secureTextEntry />
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Register')}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+        <Text style={styles.message}>{message}</Text>
+      </View>
     </View>
   );
 }
@@ -52,26 +54,43 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)', // semi-transparent background
+  },
+  loginBlob: {
+    width: 300, // or adjust as needed
     padding: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#FFF',
+    borderRadius: 25,
+    alignItems: 'center',
   },
   input: {
-    height: 40,
+    width: '100%',
+    height: 50,
     borderColor: '#000',
     borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 15,
+    borderRadius: 25,
+    color: '#000',
+    fontSize: 16,
   },
   button: {
+    width: '100%',
     backgroundColor: '#1E90FF',
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 25,
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   buttonText: {
     color: '#FFF',
     fontWeight: 'bold',
+    fontSize: 18,
+  },
+  message: {
+    color: '#000',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
