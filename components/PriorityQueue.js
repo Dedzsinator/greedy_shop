@@ -61,8 +61,28 @@ class PriorityQueue {
     }
   }
 
+  destroy() {
+    this._heap = [];
+  }
+
+  getPosition(value) {
+    return this._heap.indexOf(value);
+  }
+
+  find(value) {
+    return this._heap.indexOf(value) !== -1;
+  }
+
   toArray() {
-    return this._heap;
+    let copy = this._heap.slice();
+
+    let result = [];
+    while (!this.isEmpty()) {
+      result.push(this.pop());
+    }
+
+    this._heap = copy;
+    return result;
   }
 }
 

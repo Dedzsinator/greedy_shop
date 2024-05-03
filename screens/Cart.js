@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Animated } from 'react-native';
-import { View, Text, FlatList, StyleSheet, Button, TextInput } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Button, TextInput, ScrollView } from 'react-native';
 import { AuthContext } from '../contexts/auth'
 import { CartContext } from '../contexts/CartContext';
 import { getFirestore, collection, doc, setDoc, getDocs } from "firebase/firestore";
@@ -36,22 +36,43 @@ export default function Cart() {
   
   useEffect(() => {
     const fetchOrders = async () => {
+      // Create a new priority queue
+      const newPriorityQueue = new PriorityQueue((a, b) => a.totalPrice > b.totalPrice);
+  
+      // Insert the current user's order
+      const totalPrice = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+      const userOrder = {
+        username: user.email,
+        cart,
+        totalPrice,
+      };
+      newPriorityQueue.push(userOrder);
+  
+      // Fetch the orders from the database and add them to the queue
       const ordersSnapshot = await getDocs(collection(db, 'orders'));
       const orders = ordersSnapshot.docs.map(doc => doc.data());
-
-      // Create a new priority queue and add the orders to it
-      const newPriorityQueue = new PriorityQueue();
-      orders.forEach(order => newPriorityQueue.enqueue(order, order.totalPrice));
-
+      orders.forEach(order => newPriorityQueue.push(order));
+  
       setPriorityQueue(newPriorityQueue);
-
+  
       // Determine the user's position in the priority queue
-      const position = newPriorityQueue.getPosition(user.email);
+      const position = getPositionInQueue(newPriorityQueue, userOrder);
       setQueuePosition(position);
     };
-
+  
     fetchOrders();
-  }, []);
+  }, [cart, user.email]);
+  
+  // Function to get the position of an item in the priority queue
+function getPositionInQueue(queue, item) {
+  const queueArray = queue.toArray();
+  for (let i = 0; i < queueArray.length; i++) {
+    if (JSON.stringify(queueArray[i]) === JSON.stringify(item)) {
+      return i + 1; // Positions start at 1
+    }
+  }
+  return -1; // Item not found in the queue
+}
 
     // Inside your Cart component
   const navigation = useNavigation();
@@ -126,27 +147,29 @@ export default function Cart() {
         <Text style={styles.thankYouText}>Thank you for your order</Text>
       </Animated.View>
     )}
-      {cart.length === 0 ? (
-        <Text>Nincsenek termékek a kosárban.</Text>
-      ) : (
-        <>
-        {queuePosition !== null && (
-          <Text style={styles.queuePosition}>
-            Your position in the priority queue: {queuePosition}
-          </Text>
-        )}
-        <FlatList
-          data={cart}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-        />
-        <View style={styles.totalPriceContainer}>
-          <Text style={styles.totalPriceText}>Total Price: {totalPrice}</Text>
+      <ScrollView>
+        {cart.length === 0 ? (
+          <Text>Nincsenek termékek a kosárban.</Text>
+        ) : (
+          <>
+          {queuePosition !== null && (
+            <Text style={styles.queuePosition}>
+              Your position in the priority queue: {queuePosition}
+            </Text>
+          )}
+          <FlatList
+            data={cart}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+          />
+          <View style={styles.totalPriceContainer}>
+            <Text style={styles.totalPriceText}>Total Price: {totalPrice}</Text>
   
-          <Button title="Checkout" onPress={handleCheckout} />
-        </View>
-        </>
-      )}
+            <Button title="Checkout" onPress={handleCheckout} />
+          </View>
+          </>
+        )}
+      </ScrollView>
     </View>
   );
 }

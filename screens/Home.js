@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput, Image, FlatList, Dimensions } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, TextInput, Image, FlatList, Dimensions, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { collection, getDocs, getFirestore, doc, getDoc } from 'firebase/firestore';
 import firebase from '../firebase.js';
@@ -115,7 +115,7 @@ useEffect(() => {
     productList.forEach(product => productQueue.push(product));
 
     // Print PriorityQueue
-    productQueue.print();
+    //productQueue.print();
 
     // Remove products from PriorityQueue and set them as state
     const sortedProducts = [];
@@ -135,12 +135,14 @@ useEffect(() => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={products}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        numColumns={numColumns}
-      />
+      <ScrollView>
+        <FlatList
+          data={products}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          numColumns={numColumns}
+        />
+      </ScrollView>
     </View>
   );
 }
