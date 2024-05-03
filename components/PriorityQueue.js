@@ -1,53 +1,69 @@
-export default class PriorityQueue {
-    constructor() {
-      this.heap = [null];
-    }
-  
-    insert(order) {
-      this.heap.push(order);
-      let current = this.heap.length - 1;
-      while (current > 1 && this.heap[Math.floor(current / 2)].total < this.heap[current].total) {
-        [this.heap[Math.floor(current / 2)], this.heap[current]] = [this.heap[current], this.heap[Math.floor(current / 2)]];
-        current = Math.floor(current / 2);
-      }
-    }
-  
-    remove() {
-      let largest = this.heap[1];
-      if (this.heap.length > 2) {
-        this.heap[1] = this.heap[this.heap.length - 1];
-        this.heap.splice(this.heap.length - 1);
-        if (this.heap.length === 3) {
-          if (this.heap[1] && this.heap[1].total < this.heap[2].total) {
-            [this.heap[1], this.heap[2]] = [this.heap[2], this.heap[1]];
-          }
-          return largest;
-        }
-        let current = 1;
-        let leftChildIndex = current * 2;
-        let rightChildIndex = current * 2 + 1;
-        while (this.heap[leftChildIndex] && this.heap[rightChildIndex] && (this.heap[current].total < this.heap[leftChildIndex].total ||
-            this.heap[current].total < this.heap[rightChildIndex].total)
-        ) {
-          if (this.heap[leftChildIndex].total > this.heap[rightChildIndex].total) {
-            [this.heap[current], this.heap[leftChildIndex]] = [this.heap[leftChildIndex], this.heap[current]];
-            current = leftChildIndex;
-          } else {
-            [this.heap[current], this.heap[rightChildIndex]] = [this.heap[rightChildIndex], this.heap[current]];
-            current = rightChildIndex;
-          }
-          leftChildIndex = current * 2;
-          rightChildIndex = current * 2 + 1;
-        }
-      } else if (this.heap.length === 2) {
-        this.heap.splice(1, 1);
-      } else {
-        return null;
-      }
-      return largest;
-    }
+class PriorityQueue {
+  constructor(comparator = (a, b) => a > b) {
+    this._heap = [];
+    this._comparator = comparator;
+  }
 
-    destroy() {
-      this.heap = [null];
+  size() {
+    return this._heap.length;
+  }
+
+  isEmpty() {
+    return this.size() == 0;
+  }
+
+  peek() {
+    return this._heap[0];
+  }
+
+  push(value) {
+    this._heap.push(value);
+    this._siftUp();
+    return this.size();
+  }
+
+  pop() {
+    const poppedValue = this.peek();
+    const bottom = this.size() - 1;
+    if (bottom > 0) {
+      this._swap(0, bottom);
+    }
+    this._heap.pop();
+    this._siftDown();
+    return poppedValue;
+  }
+
+  _greater(i, j) {
+    return this._comparator(this._heap[i], this._heap[j]);
+  }
+
+  _swap(i, j) {
+    [this._heap[i], this._heap[j]] = [this._heap[j], this._heap[i]];
+  }
+
+  _siftUp() {
+    let node = this.size() - 1;
+    while (node > 0 && this._greater(node, Math.floor((node - 1) / 2))) {
+      this._swap(node, Math.floor((node - 1) / 2));
+      node = Math.floor((node - 1) / 2);
     }
   }
+
+  _siftDown() {
+    let node = 0;
+    while (
+      (2 * node + 1 < this.size() && this._greater(2 * node + 1, node)) ||
+      (2 * node + 2 < this.size() && this._greater(2 * node + 2, node))
+    ) {
+      let maxChild = (2 * node + 2 < this.size() && this._greater(2 * node + 2, 2 * node + 1)) ? 2 * node + 2 : 2 * node + 1;
+      this._swap(node, maxChild);
+      node = maxChild;
+    }
+  }
+
+  toArray() {
+    return this._heap;
+  }
+}
+
+export default PriorityQueue;

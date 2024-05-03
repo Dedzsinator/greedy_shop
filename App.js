@@ -12,6 +12,7 @@ import { CartContextProvider } from './contexts/CartContext.js';
 import Cart from './screens/Cart.js';
 import AdminPanel from './screens/AdminPanel.js';
 import ProductDetail from './screens/DetailedProduct.js';
+import ModeratorPanel from './screens/ModeratorPanel.js';
 
 const Stack = createStackNavigator();
 
@@ -42,10 +43,15 @@ export default function App() {
             <Stack.Screen name="Register" component={RegisterScreen} />
             <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="AdminPanel" component={AdminPanel} />
+            <Stack.Screen name="ModeratorPanel" component={ModeratorPanel} />
+            <Stack.Screen name="Greedy Shop" component={HomeScreen} />
           </>
         ) : (
           <>
             <Stack.Screen name="Greedy Shop" component={HomeScreen} />
+            <Stack.Screen name="Register" component={RegisterScreen} />
+            <Stack.Screen name="ModeratorPanel" component={ModeratorPanel} />
+            <Stack.Screen name="Login" component={LoginScreen} />
             <Stack.Screen name="Cart" component={Cart} />
             <Stack.Screen name="AdminPanel" component={AdminPanel} />
             <Stack.Screen name="ProductDetail" component={ProductDetail} />

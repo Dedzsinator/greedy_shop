@@ -14,20 +14,19 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   const handleLogin = async () => {
-    console.log('handleLogin called');
     if (email === 'admin' && password === 'admin') {
-      console.log('navigating to AdminPanel');
       navigation.navigate('AdminPanel');
+    }
+    if (email == 'mod' && password == 'mod') {
+      navigation.navigate('ModeratorPanel');
     } else {
-      console.log('attempting to sign in with Firebase Authentication');
       const auth = getAuth(firebase);
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('signed in with Firebase Authentication', userCredential.user);
         setUser(userCredential.user);
         setMessage('Logged in successfully');
+        navigation.navigate('Greedy Shop');
       } catch (error) {
-        console.error('error signing in with Firebase Authentication', error);
         setMessage('Invalid credentials');
       }
     }
@@ -35,7 +34,7 @@ export default function LoginScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.loginBlob}>
+      <View style={styles.loginWindow}>
         <TextInput style={styles.input} placeholder="Email" placeholderTextColor="#000" onChangeText={setEmail} />
         <TextInput style={styles.input} placeholder="Password" placeholderTextColor="#000" onChangeText={setPassword} secureTextEntry />
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
@@ -57,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'rgba(0,0,0,0.5)', // semi-transparent background
   },
-  loginBlob: {
+  loginWindow: {
     width: 300, // or adjust as needed
     padding: 20,
     backgroundColor: '#FFF',
